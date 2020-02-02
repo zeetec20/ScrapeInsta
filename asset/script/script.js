@@ -1,11 +1,13 @@
-listPost = document.getElementById('allPost')
+let posts
+let listPost = document.getElementById('allPost')
 let countGetPost = 1
-let getPostActive = true 
+let getPostActive = true
+let offset = document.querySelector('.offset1').offsetTop
 
 window.onscroll = function () {
     if (offset < window.scrollY && getPostActive) {
         offset += offset
-
+        
         axios.get(`${mainPath}/post/?id=${id_user}&end_cursor=${end_cursor}&post=get_post`)
         .then(function (response){
             response = response['data']

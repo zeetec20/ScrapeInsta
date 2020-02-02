@@ -1,21 +1,19 @@
 <?php
+$username = 'hello.darwis'; 
 
-//returns a big old hunk of JSON from a non-private IG account page.
 function scrape_insta($username) {
-	$insta_source = file_get_contents('http://instagram.com/'.$username);
+	$insta_source = file_get_contents('https://www.instagram.com/'.$username);
 	$shards = explode('window._sharedData = ', $insta_source);
 	$insta_json = explode(';</script>', $shards[1]); 
 	$insta_array = json_decode($insta_json[0], TRUE);
 	return $insta_array;
 }
 
-//Supply a username
-$username = 'firmanjl363'; 
-
-//Do the deed
 $results_array = scrape_insta($username)['entry_data']['ProfilePage'][0]['graphql']['user'];
 
 $linkAccount = 'http://instagram.com/'.$username;
+$id = $results_array['id'];
+$end_cursor = str_replace('==', '', $results_array['edge_owner_to_timeline_media']['page_info']['end_cursor']);
 $fullname = $results_array['full_name'];
 $listPost = $results_array['edge_owner_to_timeline_media']['edges'];
 $profile_pic = $results_array['profile_pic_url_hd'];
@@ -23,6 +21,8 @@ $follower = $results_array['edge_followed_by']['count'];
 $following = $results_array['edge_follow']['count'];
 $countPost = $results_array['edge_owner_to_timeline_media']['count'];
 $biography = $results_array['biography'];
+
+$mainPath = '/'.explode('/', dirname($_SERVER['PHP_SELF']))[1];
 ?>
 
 
@@ -34,8 +34,15 @@ $biography = $results_array['biography'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Profile | Vietgram</title>
+    <script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./asset/css/styles.css">
+    
+    <script>
+        let id_user = '<?=$id?>'
+        let end_cursor = '<?=$end_cursor?>'
+        let mainPath = '<?=$mainPath?>'
+    </script>
 </head>
 
 <body>
@@ -96,15 +103,29 @@ $biography = $results_array['biography'];
                         <?=$fullname?>
                         <br>
                     </span> 
-                    <textarea id="bio" name="" id="" cols="30" rows="10"><?=$biography?></textarea>
+                    <textarea id="bio" name="" readonly><?=$biography?></textarea>
+                    <script>
+                        autosize(document.getElementById('bio'))
+                    </script>
+                    <style>
+                        #bio{
+                            border: none; 
+                            outline: none; 
+                            resize: none; 
+                            background-color: white;
+                            font-family: "Open Sans", sans-serif;
+                            font-size: 14px;
+                            width: 100%;
+                        }
+                    </style>
                 </p>
             </div>
         </header>
-        <section class="profile__photos">
+        <section class="profile__photos" id="allPost">
             <?php
             foreach ($listPost as $key => $value):
             ?>
-                <div class="profile__photo">
+                <div class="profile__photo <?=$key == 8 ? 'offset1' : ''?>">
                 <div style="background-image:url('<?=$value['node']['display_url']?>'); background-size: 100%; height: 290px; width: 290px; background-position:center;">&nbsp;</div>
                     <div class="profile__photo-overlay">
                         <span class="overlay__item">
@@ -143,6 +164,9 @@ $biography = $results_array['biography'];
             <span class="footer__copyright">© 2020 Instagram</span>
         </div>
     </footer>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="./asset/script/script.js"></script>
 </body>
 
 </html>
