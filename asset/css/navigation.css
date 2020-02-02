@@ -66,6 +66,7 @@
 
 .navigation__column {
   position: relative;
+  margin: auto;
 }
 
 .navigation__column .fa-search {

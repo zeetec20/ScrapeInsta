@@ -1,0 +1,16 @@
+#bio {
+    border: none;
+    outline: none;
+    resize: none;
+    background-color: #fafafa;
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    width: 100%;
+}
+
+.profile__photo .image {
+    height: 290px;
+    width: 290px;
+    background-size: cover;
+    background-position: center;
+}
