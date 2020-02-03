@@ -54,7 +54,7 @@ if (isset($_GET['username'])) {
         <div class="navigation__column">
             <form action="" method="get">
             <label for="submit"><i class="fa fa-search"></i></label>
-            <input type="text" name="username" placeholder="Search" <?=($username == null ? autofocus : '')?>>
+            <input type="text" name="username" placeholder="Search" <?=($username == null ? 'autofocus' : '')?>>
             <button id="submit" type="submit" style="display: none;"></button>
             </form>
         </div>
